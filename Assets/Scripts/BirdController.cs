@@ -10,6 +10,7 @@ public class BirdController : MonoBehaviour
     //All of varible
     public LayerMask layer;
     [SerializeField] GameObject Legs;
+
     public bool canJump = true;
     public bool isFalling = false;
     bool isDrag = false;
@@ -22,10 +23,12 @@ public class BirdController : MonoBehaviour
     //Reference from unity
     Rigidbody2D rb;
     Camera cam;
+    DrawTrajectory trajectory;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        trajectory = GetComponent<DrawTrajectory>();
         cam = Camera.main;
     }
     void Start()
@@ -37,15 +40,21 @@ public class BirdController : MonoBehaviour
     {
 
         DragAction();
-        CheckGround();
         CheckFalling();
+        CheckGround();
+
+    }
+    private void LateUpdate()
+    {
         lastPosPerFrame = transform.position;
+
     }
 
     void OnDragStart()
     {
         startPoint = transform.position;
         direction = transform.position;
+        trajectory.Show();
     }
 
     void OnDrag()
@@ -61,7 +70,7 @@ public class BirdController : MonoBehaviour
             distance = Vector2.Distance(startPoint, endPoint);
             direction = (startPoint - endPoint).normalized;
         }
-
+        trajectory.UpdateTrajectory(transform.position, direction);
         Debug.DrawRay(transform.position, direction * distance, Color.white);
 
     }
@@ -74,6 +83,8 @@ public class BirdController : MonoBehaviour
             Vector2 force = direction * pushForce * distance;
             rb.AddForce(force, ForceMode2D.Impulse);
             canJump = false;
+            trajectory.Hide();
+
         }
     }
 
@@ -99,20 +110,21 @@ public class BirdController : MonoBehaviour
 
     void CheckFalling()
     {
-        if ((lastPosPerFrame.y - transform.position.y) < -0.01f)
+        if ((transform.position.y - lastPosPerFrame.y) > 0.01f)
         {
-            isFalling = true;
+            isFalling = false;
         }
         else
         {
-            isFalling = false;
+            isFalling = true;
         }
     }
 
     void CheckGround()
     {
 
-        if (Physics2D.Raycast(Legs.transform.position, Vector2.down, 0.2f, layer))
+
+        if (Physics2D.Raycast(Legs.transform.position, Vector2.down, 0.1f, layer))
         {
             canJump = true;
         }
@@ -120,6 +132,7 @@ public class BirdController : MonoBehaviour
         {
             canJump = false;
         }
+
 
     }
 

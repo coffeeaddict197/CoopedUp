@@ -28,7 +28,7 @@ public class CameraScript : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (player.canJump && !player.isFalling)
+        if (player.canJump && player.isFalling)
         {
             Vector2 newPos = Vector2.Lerp(transform.position, player.transform.position, Time.fixedDeltaTime * 5f);
             transform.position = new Vector3(transform.position.x, newPos.y, offSet);
