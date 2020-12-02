@@ -5,18 +5,18 @@ using UnityEngine;
 public class BirdController : MonoBehaviour
 {
 
-    [SerializeField] float pushForce = 4f;
-
+    [SerializeField] float pushForce = 6f;
 
     //All of varible
     public LayerMask layer;
-    public GameObject Legs;
-    bool canJump = true;
+    [SerializeField] GameObject Legs;
+    public bool canJump = true;
+    public bool isFalling = false;
     bool isDrag = false;
     Vector2 startPoint;
     Vector2 endPoint;
-    Vector3 endPointBird;
     Vector2 direction;
+    Vector2 lastPosPerFrame; //Detect falling
     float distance;
 
     //Reference from unity
@@ -38,6 +38,8 @@ public class BirdController : MonoBehaviour
 
         DragAction();
         CheckGround();
+        CheckFalling();
+        lastPosPerFrame = transform.position;
     }
 
     void OnDragStart()
@@ -60,7 +62,6 @@ public class BirdController : MonoBehaviour
             direction = (startPoint - endPoint).normalized;
         }
 
-
         Debug.DrawRay(transform.position, direction * distance, Color.white);
 
     }
@@ -69,6 +70,7 @@ public class BirdController : MonoBehaviour
     {
         if (canJump)
         {
+            if (distance > 2) distance = 2;
             Vector2 force = direction * pushForce * distance;
             rb.AddForce(force, ForceMode2D.Impulse);
             canJump = false;
@@ -95,8 +97,21 @@ public class BirdController : MonoBehaviour
 
     }
 
+    void CheckFalling()
+    {
+        if ((lastPosPerFrame.y - transform.position.y) < -0.01f)
+        {
+            isFalling = true;
+        }
+        else
+        {
+            isFalling = false;
+        }
+    }
+
     void CheckGround()
     {
+
         if (Physics2D.Raycast(Legs.transform.position, Vector2.down, 0.2f, layer))
         {
             canJump = true;
@@ -105,8 +120,12 @@ public class BirdController : MonoBehaviour
         {
             canJump = false;
         }
+
     }
 
-   
+
+
+
+
 
 }
