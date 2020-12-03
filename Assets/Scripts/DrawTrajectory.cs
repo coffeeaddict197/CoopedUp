@@ -38,13 +38,14 @@ public class DrawTrajectory : MonoBehaviour
     public void UpdateTrajectory(Vector2 aimPos, Vector2 direc)
     {
         posSpacing = Vector2.zero;
+       
         for (int i = 0; i < numberOfDot; i++)
         {
             pos = aimPos + posSpacing;
 
             listDots[i].transform.position = pos;
 
-            posSpacing += direc/5;
+            posSpacing += direc/numberOfDot;
         }
     }
 

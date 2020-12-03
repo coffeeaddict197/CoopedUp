@@ -9,6 +9,8 @@ public class CameraScript : MonoBehaviour
     List<Vector2> points;
     EdgeCollider2D edCol;
 
+    Vector2 _posLeft;
+    Vector2 _posRight;
     int offSet = -10;
 
     private void Awake()
@@ -18,6 +20,8 @@ public class CameraScript : MonoBehaviour
         points = new List<Vector2>();
         edCol = GetComponent<EdgeCollider2D>();
         drawColliderByScreen();
+        _posLeft = cam.MiddleLeftPoint();
+        _posRight = cam.MiddleRightPoint();
     }
 
     void Start()
@@ -35,6 +39,12 @@ public class CameraScript : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        LimitMovement();
+
+    }
+
     void drawColliderByScreen()
     {
         points.Add(cam.TopLeftPoint());
@@ -46,6 +56,14 @@ public class CameraScript : MonoBehaviour
         edCol.offset = cam.MiddlePoint() * -1;
 
         transform.localScale = transform.localScale;
+    }
+
+    void LimitMovement()
+    {
+        float posX = player.transform.position.x;
+        posX = Mathf.Clamp(posX, _posLeft.x, _posRight.x);
+        player.transform.position = new Vector2(posX, player.transform.position.y);
+
     }
 
 
