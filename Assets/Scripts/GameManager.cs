@@ -6,5 +6,6 @@ public class GameManager : MonoSingleton<GameManager>
 {
     // Start is called before the first frame update
     public BirdController bird;
+    public Camera camera;
     
 }

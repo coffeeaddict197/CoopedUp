@@ -3,7 +3,9 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - OneLine
+  - OneRope
   layers:
   - Default
   - TransparentFX
@@ -14,8 +16,8 @@ TagManager:
   - 
   - 
   - Line
-  - 
-  - 
+  - PlayerLayer
+  - CamLayer
   - 
   - 
   - 

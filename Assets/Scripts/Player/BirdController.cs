@@ -13,6 +13,7 @@ public class BirdController : MonoBehaviour
 
     public bool canJump = true;
     public bool isFalling = false;
+    bool faceLeft = false;
     bool isDrag = false;
     Vector2 startPoint;
     Vector2 endPoint;
@@ -21,7 +22,7 @@ public class BirdController : MonoBehaviour
     float distance;
 
     //Reference from unity
-    Rigidbody2D rb;
+    public Rigidbody2D rb;
     Camera cam;
     DrawTrajectory trajectory;
     BoxCollider2D boxCollider;
@@ -43,7 +44,7 @@ public class BirdController : MonoBehaviour
     void Update()
     {
 
-        DragAction();
+        if (canJump) DragAction();
         CheckGround();
         CheckFalling();
 
@@ -67,35 +68,37 @@ public class BirdController : MonoBehaviour
     void OnDrag()
     {
 
-        if (canJump)
+
+        //validate
+        endPoint = cam.ScreenToWorldPoint(Input.mousePosition);
+        if (endPoint.y >= transform.position.y)
         {
-            //validate
-            endPoint = cam.ScreenToWorldPoint(Input.mousePosition);
-            if (endPoint.y >= transform.position.y)
-            {
-                currentLine.RopeUpdate(0);
-                return;
-            }
-            distance = Vector2.Distance(startPoint, endPoint);
-            if (distance >= 2) distance = 2;
-            direction = (startPoint - endPoint).normalized;
-            currentLine.RopeUpdate(distance);
-            Debug.DrawRay(transform.position , direction*5f);
-            if (canJump) trajectory.UpdateTrajectory(transform.position, direction * distance);
+            currentLine.RopeUpdate(0);
+            return;
         }
+        distance = Vector2.Distance(startPoint, endPoint);
+        if (distance >= 2) distance = 2;
+        direction = (startPoint - endPoint).normalized;
+        currentLine.RopeUpdate(distance);
+        trajectory.UpdateTrajectory(transform.position, direction * distance);
+
     }
 
     void OnDragEnd()
     {
-        if (canJump)
-        {
-            Vector2 force = direction * pushForce * distance;
-            rb.AddForce(force, ForceMode2D.Impulse);
-            canJump = false;
-            trajectory.Hide();
-            StartCoroutine(currentLine.RopeReset());
 
-        }
+        boxCollider.enabled = false;
+        Vector2 force = direction * pushForce * distance;
+        rb.AddForce(force, ForceMode2D.Impulse);
+        canJump = false;
+        trajectory.Hide();
+        StartCoroutine(currentLine.RopeReset());
+        if (endPoint.x > transform.position.x)
+            faceLeft = true;
+        else
+            faceLeft = false;
+
+
     }
 
     void DragAction()
@@ -168,24 +171,23 @@ public class BirdController : MonoBehaviour
         {
             currentLine = other.GetComponent<LineGenerator>();
             currentLine.currentRopeID = idLineElemnt;
-            Debug.Log(idLineElemnt);
             currentLine.SetupRopeDisplay();
             //StartCoroutine(WaitToSetRopeDisplay(idLineElemnt));
         }
+
+        if (other.tag == "MainCamera")
+        {
+            rb.velocity = Vector2.zero;
+            Vector2 perpendicular = Vector2.Perpendicular(direction);
+            if (!faceLeft)
+                rb.AddForce(perpendicular * 3f * distance * 0.5f, ForceMode2D.Impulse);
+            else
+                rb.AddForce(perpendicular * 3f * distance * -0.5f, ForceMode2D.Impulse);
+
+        }
     }
 
-    //Nen chi update 1 lan duy nhat
-    // private void OnTriggerStay2D(Collider2D other)
-    // {
-    //     currentLine.currentRopeID = idLineElemnt;
-    //     currentLine.SetupRopeDisplay();
-    // }
 
-    // IEnumerator WaitToSetRopeDisplay(int id)
-    // {
-    //     yield return new WaitForSeconds(0.5f);
-    //     currentLine.SetupRopeDisplay(id);
-    // }
 
 
 

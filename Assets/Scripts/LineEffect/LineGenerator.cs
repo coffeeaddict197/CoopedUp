@@ -65,7 +65,6 @@ public class LineGenerator : MonoBehaviour, CollisionWithRope
     public void SetupRopeDisplay()
     {
 
-        Debug.Log(currentRopeID);
         for (int i = 0; i < dictPieceOFLine.Length; i++)
         {
             if (dictPieceOFLine[i].index == currentRopeID)
@@ -96,13 +95,26 @@ public class LineGenerator : MonoBehaviour, CollisionWithRope
             angleLeft = 0;
         }
         parentLeft.transform.rotation = Quaternion.Lerp(parentLeft.transform.rotation, Quaternion.Euler(parentLeft.transform.rotation.x, parentLeft.transform.rotation.y, -angleLeft), 0.15f);
-        parentRight.transform.rotation = Quaternion.Lerp(parentRight.transform.rotation, Quaternion.Euler(parentRight.transform.rotation.x, parentRight.transform.rotation.y, angleRight), 1f);
+        //parentRight.transform.rotation = Quaternion.Lerp(parentRight.transform.rotation, Quaternion.Euler(parentRight.transform.rotation.x, parentRight.transform.rotation.y, angleRight), 2f);
+        parentRight.transform.rotation = Quaternion.Euler(parentRight.transform.rotation.x, parentRight.transform.rotation.y, angleRight);
 
     }
 
     public IEnumerator RopeReset()
     {
-        yield return new WaitForSeconds(0.05f);
+        float t = 0f;
+        Quaternion startA = parentLeft.transform.rotation;
+        Quaternion startB = parentRight.transform.rotation;
+        float dur = 0.1f;
+
+        while (t < dur)
+        {
+            parentLeft.transform.rotation = Quaternion.Slerp(startA, Quaternion.Euler(0f, 0f, 0f), t / dur);
+            parentRight.transform.rotation = Quaternion.Slerp(startB, Quaternion.Euler(0f, 0f, 0f), t / dur);
+
+            yield return null;
+            t += Time.deltaTime;
+        }
         parentLeft.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
         parentRight.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
 

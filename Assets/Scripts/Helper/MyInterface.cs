@@ -6,3 +6,9 @@ public interface CollisionWithRope
 {
    void SetupRopeDisplay();
 }
+
+
+public interface CollisionWithCamera
+{
+   void BouceFromCamera();
+}
