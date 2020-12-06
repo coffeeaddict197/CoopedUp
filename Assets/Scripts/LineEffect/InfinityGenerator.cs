@@ -5,18 +5,13 @@ using UnityEngine;
 public class InfinityGenerator : MonoBehaviour
 {
     // Start is called before the first frame update
-    private List<Transform> listRope = new List<Transform>();
+    public List<Transform> listRope = new List<Transform>();
     private float lastPosY;
     private Camera cam;
 
     private void Awake()
     {
         cam = Camera.main;
-        GameObject[] listRopes = GameObject.FindGameObjectsWithTag("OneRope");
-        for (int i = 0; i < listRopes.Length; i++)
-        {
-            listRope.Add(listRopes[i].transform);
-        }
         lastPosY = listRope[listRope.Count - 1].transform.position.y;
 
     }

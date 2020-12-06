@@ -10,6 +10,7 @@ public class BirdController : MonoBehaviour
     //All of varible
     public LayerMask layer;
     public GameObject Legs;
+    public Rigidbody2D rb;
 
     public bool canJump = true;
     public bool isFalling = false;
@@ -18,23 +19,32 @@ public class BirdController : MonoBehaviour
     Vector2 startPoint;
     Vector2 endPoint;
     Vector2 direction;
-    Vector2 lastPosPerFrame; //Detect falling
     float distance;
 
-    //Reference from unity
-    public Rigidbody2D rb;
+
     Camera cam;
-    DrawTrajectory trajectory;
-    BoxCollider2D boxCollider;
-    LineGenerator currentLine;
-    int idLineElemnt;
+    DrawTrajectory _trajectory;
+    BoxCollider2D _boxCollider;
+    LineGenerator _currentRope;
+    AimAnimationController _aimAnimationController;
+    //Save current line of Rope
+    int _idLineElemnt;
+    Animator _anim;
+    const string a_isAim = "isAim";
+    const string a_isFly = "isFly";
+    const string a_triggerFalling = "Falling";
+
+    float _curScaleX;
 
     void Awake()
     {
-        boxCollider = GetComponent<BoxCollider2D>();
+        _anim = GetComponent<Animator>();
+        _boxCollider = GetComponent<BoxCollider2D>();
+        _trajectory = GetComponent<DrawTrajectory>();
+        _aimAnimationController = GetComponent<AimAnimationController>();
         rb = GetComponent<Rigidbody2D>();
-        trajectory = GetComponent<DrawTrajectory>();
         cam = Camera.main;
+        _curScaleX = transform.localScale.x;
     }
     void Start()
     {
@@ -43,62 +53,58 @@ public class BirdController : MonoBehaviour
 
     void Update()
     {
-
-        if (canJump) DragAction();
         CheckGround();
         CheckFalling();
-
+        GetFaceDirection();
+        SetAnimation();
     }
 
-    void LateUpdate()
+    private void LateUpdate()
     {
-        lastPosPerFrame = transform.position;
-
+        if (canJump)
+            DragAction();
     }
-
 
 
     void OnDragStart()
     {
-        startPoint = transform.position;
+        startPoint = cam.ScreenToWorldPoint(Input.mousePosition);
         endPoint = transform.up;
-        trajectory.Show();
     }
 
     void OnDrag()
     {
-
-
-        //validate
+        _trajectory.Show();
+        _anim.SetBool(a_isAim, true);
         endPoint = cam.ScreenToWorldPoint(Input.mousePosition);
-        if (endPoint.y >= transform.position.y)
+        if (endPoint.y >= startPoint.y)
         {
-            currentLine.RopeUpdate(0);
+            _currentRope.RopeUpdate(0);
+            endPoint = startPoint;
+            _trajectory.Hide();
+            _anim.SetBool(a_isAim, false);
             return;
         }
+
         distance = Vector2.Distance(startPoint, endPoint);
         if (distance >= 2) distance = 2;
         direction = (startPoint - endPoint).normalized;
-        currentLine.RopeUpdate(distance);
-        trajectory.UpdateTrajectory(transform.position, direction * distance);
+
+        _currentRope.RopeUpdate(distance);
+        _aimAnimationController.UpdateSprieFollowDirecion(direction);
+        _trajectory.UpdateTrajectory(transform.position, direction * distance);
 
     }
 
     void OnDragEnd()
     {
-
-        boxCollider.enabled = false;
+        _anim.SetBool(a_isAim, false);
+        _boxCollider.enabled = false;
         Vector2 force = direction * pushForce * distance;
         rb.AddForce(force, ForceMode2D.Impulse);
         canJump = false;
-        trajectory.Hide();
-        StartCoroutine(currentLine.RopeReset());
-        if (endPoint.x > transform.position.x)
-            faceLeft = true;
-        else
-            faceLeft = false;
-
-
+        _trajectory.Hide();
+        StartCoroutine(_currentRope.RopeReset());
     }
 
     void DragAction()
@@ -121,6 +127,23 @@ public class BirdController : MonoBehaviour
 
     }
 
+
+    void GetFaceDirection()
+    {
+        if (endPoint.x > transform.position.x)
+        {
+            faceLeft = true;
+            transform.localScale = new Vector2(_curScaleX, transform.localScale.y);
+
+        }
+        else
+        {
+            faceLeft = false;
+            transform.localScale = new Vector2(-_curScaleX, transform.localScale.y);
+        }
+
+    }
+
     void CheckFalling()
     {
 
@@ -129,50 +152,65 @@ public class BirdController : MonoBehaviour
             if (rb.velocity.y < -0.1)
             {
                 isFalling = true;
-                boxCollider.enabled = true;
-
+                _boxCollider.enabled = true;
             }
             else
             {
                 isFalling = false;
-                boxCollider.enabled = false;
+                _boxCollider.enabled = false;
             }
         }
+    }
 
+    void SetAnimation()
+    {
+        if (isFalling && !canJump)
+        {
+            _anim.SetTrigger(a_triggerFalling);
+        }
+        else
+        {
+            _anim.ResetTrigger(a_triggerFalling);
+        }
+
+        if (canJump)
+        {
+            _anim.SetBool(a_isFly, false);
+
+        }
+        else
+        {
+            _anim.SetBool(a_isFly, true);
+        }
     }
 
     void CheckGround()
     {
-
-
-
-        RaycastHit2D hit = Physics2D.Raycast(Legs.transform.position, Vector2.down, 0.3f, layer);
-        if (hit)
+        if (isFalling)
         {
-            canJump = true;
-            idLineElemnt = hit.transform.GetComponent<LineElement>().id;
-            //hit.transform.GetComponent<SpriteRenderer>().color = Color.black;
+            RaycastHit2D hit = Physics2D.Raycast(Legs.transform.position, Vector2.down, 0.3f, layer);
+            if (hit)
+            {
+                canJump = true;
+                _idLineElemnt = hit.transform.GetComponent<LineElement>().id;
+            }
+            else
+            {
+                canJump = false;
+
+            }
         }
-        else
-        {
-            canJump = false;
-        }
-
-
-
     }
 
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-
         var check = other.GetComponent<CollisionWithRope>();
         if (check != null)
         {
-            currentLine = other.GetComponent<LineGenerator>();
-            currentLine.currentRopeID = idLineElemnt;
-            currentLine.SetupRopeDisplay();
-            //StartCoroutine(WaitToSetRopeDisplay(idLineElemnt));
+            _currentRope = other.GetComponent<LineGenerator>();
+            _currentRope.currentRopeID = _idLineElemnt;
+            _currentRope.SetupRopeDisplay();
         }
 
         if (other.tag == "MainCamera")
@@ -183,7 +221,6 @@ public class BirdController : MonoBehaviour
                 rb.AddForce(perpendicular * 3f * distance * 0.5f, ForceMode2D.Impulse);
             else
                 rb.AddForce(perpendicular * 3f * distance * -0.5f, ForceMode2D.Impulse);
-
         }
     }
 

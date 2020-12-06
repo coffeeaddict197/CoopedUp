@@ -32,16 +32,22 @@ public class CameraScript : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (player.canJump && player.isFalling)
+        if (player != null)
         {
-            Vector2 newPos = Vector2.Lerp(transform.position, player.transform.position, Time.fixedDeltaTime * 5f);
-            transform.position = new Vector3(transform.position.x, newPos.y, offSet);
+            if (player.canJump && player.isFalling)
+            {
+                Vector2 newPos = Vector2.Lerp(transform.position, player.transform.position, Time.fixedDeltaTime * 5f);
+                transform.position = new Vector3(transform.position.x, newPos.y, offSet);
+            }
         }
     }
 
     private void Update()
     {
-        LimitMovement();
+        if (player != null)
+        {
+            LimitMovement();
+        }
 
     }
 
