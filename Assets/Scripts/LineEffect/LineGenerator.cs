@@ -137,6 +137,14 @@ public class LineGenerator : MonoBehaviour, CollisionWithRope
         }
     }
 
+    void ConfigEnemy()
+    {
+        //for(int i = 0; i < enemyConfig.Length; i++)
+        //{
+        //    if(enemyConfig[i].type )
+        //}
+    }
+
 
 
 

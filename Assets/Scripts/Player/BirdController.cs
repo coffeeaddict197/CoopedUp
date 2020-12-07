@@ -50,10 +50,14 @@ public class BirdController : MonoBehaviour
 
     void Update()
     {
-        CheckGround();
         CheckFalling();
         GetFaceDirection();
         SetAnimation();
+    }
+
+    private void FixedUpdate()
+    {
+        CheckGround();
     }
 
     private void LateUpdate()
@@ -210,7 +214,7 @@ public class BirdController : MonoBehaviour
     {
         if (isFalling)
         {
-            RaycastHit2D hit = Physics2D.Raycast(Legs.transform.position, Vector2.down, 0.3f, layer);
+            RaycastHit2D hit = Physics2D.Raycast(Legs.transform.position, Vector2.down, 0.4f, layer);
             if (hit)
             {
                 canJump = true;

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6906875353218668698}
   - component: {fileID: 6906875353218668692}
   m_Layer: 0
-  m_Name: One Line (1)
+  m_Name: One Rope With One Enemy
   m_TagString: OneRope
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -152,6 +152,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 1857467210636376002, guid: eef826761d6685345b320f8ba0c9b867,
+        type: 3}
+      propertyPath: state
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1857467210636376007, guid: eef826761d6685345b320f8ba0c9b867,
         type: 3}
