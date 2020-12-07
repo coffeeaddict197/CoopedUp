@@ -12,3 +12,9 @@ public interface CollisionWithCamera
 {
    void BouceFromCamera();
 }
+
+
+public interface CollisionWithBranch
+{
+    void BranchUpdate(float distance);
+}

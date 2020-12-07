@@ -5,7 +5,9 @@ using UnityEngine;
 public class InfinityGenerator : MonoBehaviour
 {
     // Start is called before the first frame update
-    public List<Transform> listRope = new List<Transform>();
+    public List<LineGenerator> listRope = new List<LineGenerator>();
+    public List<Branch> listBranch = new List<Branch>();
+
     private float lastPosY;
     private Camera cam;
 
@@ -13,6 +15,7 @@ public class InfinityGenerator : MonoBehaviour
     {
         cam = Camera.main;
         lastPosY = listRope[listRope.Count - 1].transform.position.y;
+        getLastPosY();
 
     }
 
@@ -22,8 +25,29 @@ public class InfinityGenerator : MonoBehaviour
         {
             if (listRope[i].transform.position.y < cam.BottomMiddlePoint().y)
             {
-                listRope[i].transform.position = new Vector3(listRope[i].transform.position.x, lastPosY + 2.5f);
                 lastPosY += 2.5f;
+                listRope[i].UpdatePosition(lastPosY);
+            }
+        }
+
+        for(int i = 0; i < listBranch.Count; i++)
+        {
+            if (listBranch[i].transform.position.y < cam.BottomMiddlePoint().y)
+            {
+                lastPosY += 2.5f;
+                listBranch[i].UpdatePosition(lastPosY);
+            }
+        }
+    }
+
+
+    void getLastPosY()
+    {
+        for (int i = 0; i < listBranch.Count; i++)
+        {
+            if (listBranch[i].transform.position.y > lastPosY)
+            {
+                lastPosY = listBranch[i].transform.position.y;
             }
         }
     }

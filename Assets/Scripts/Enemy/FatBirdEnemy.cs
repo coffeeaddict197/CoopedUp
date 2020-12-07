@@ -26,7 +26,7 @@ public class FatBirdEnemy : BasicEnemy
         if(!hitLeftSide && !hitRightSide)
         {
             state = EnemyState.Idle;
-            _anim.SetBool(a_Move, false);
+            anim.SetBool(a_Move, false);
         }
     }
 }

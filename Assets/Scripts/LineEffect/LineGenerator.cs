@@ -10,17 +10,19 @@ public class LineGenerator : MonoBehaviour, CollisionWithRope
         public int index;
         public Transform trans;
     }
+   
 
     // Start is called before the first frame update
     public GameObject LinePrefab;
     public GameObject parentLeft;
     public GameObject parentRight;
 
+    [HideInInspector] public int currentRopeID;
     [SerializeField] int pieceOfLine;
-    [SerializeField] DictLine[] dictPieceOFLine;
+    [SerializeField] BasicEnemy[] enemyConfig;
 
+    DictLine[] dictPieceOFLine;
     Vector2 pos;
-    public int currentRopeID;
 
     void GenerateLine()
     {
@@ -117,7 +119,22 @@ public class LineGenerator : MonoBehaviour, CollisionWithRope
         }
         parentLeft.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
         parentRight.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+    }
 
+
+    public void UpdatePosition(float newPosY)
+    {
+        transform.position = new Vector2(transform.position.x, newPosY);
+        for (int i = 0; i < enemyConfig.Length; i++)
+        {
+            if (enemyConfig[i].type != BasicEnemy.TypeEnemy.Basic)
+            {
+                float randomX = Random.Range(GameManager.Instance.camera.MiddleLeftPoint().x, GameManager.Instance.camera.MiddleRightPoint().x);
+                Vector2 pos = enemyConfig[i].transform.localPosition;
+                pos.x = randomX;
+                enemyConfig[i].RespawnAt(pos);
+            }
+        }
     }
 
 

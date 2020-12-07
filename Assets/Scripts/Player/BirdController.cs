@@ -26,6 +26,7 @@ public class BirdController : MonoBehaviour
     DrawTrajectory _trajectory;
     BoxCollider2D _boxCollider;
     LineGenerator _currentRope;
+    Branch _curBranch;
     AimAnimationController _aimAnimationController;
     //Save current line of Rope
     int _idLineElemnt;
@@ -45,10 +46,6 @@ public class BirdController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         cam = Camera.main;
         _curScaleX = transform.localScale.x;
-    }
-    void Start()
-    {
-
     }
 
     void Update()
@@ -79,7 +76,7 @@ public class BirdController : MonoBehaviour
         endPoint = cam.ScreenToWorldPoint(Input.mousePosition);
         if (endPoint.y >= startPoint.y)
         {
-            _currentRope.RopeUpdate(0);
+            GroundDisplayUpdating(0);
             endPoint = startPoint;
             _trajectory.Hide();
             _anim.SetBool(a_isAim, false);
@@ -89,8 +86,7 @@ public class BirdController : MonoBehaviour
         distance = Vector2.Distance(startPoint, endPoint);
         if (distance >= 2) distance = 2;
         direction = (startPoint - endPoint).normalized;
-
-        _currentRope.RopeUpdate(distance);
+        GroundDisplayUpdating(distance);
         _aimAnimationController.UpdateSprieFollowDirecion(direction);
         _trajectory.UpdateTrajectory(transform.position, direction * distance);
 
@@ -104,7 +100,9 @@ public class BirdController : MonoBehaviour
         rb.AddForce(force, ForceMode2D.Impulse);
         canJump = false;
         _trajectory.Hide();
-        StartCoroutine(_currentRope.RopeReset());
+        GroundDisplayReset();
+        _currentRope = null;
+        _curBranch = null;
     }
 
     void DragAction()
@@ -124,9 +122,33 @@ public class BirdController : MonoBehaviour
         {
             OnDrag();
         }
-
     }
 
+
+    void GroundDisplayUpdating(float distance)
+    {
+        if (_currentRope != null)
+        {
+            _currentRope.RopeUpdate(distance);
+        }
+        else if(_curBranch!=null)
+        {
+            _curBranch.BranchUpdate(distance);
+        }
+    }
+
+    void GroundDisplayReset()
+    {
+        if (_currentRope != null)
+        {
+            StartCoroutine(_currentRope.RopeReset());
+        }
+        else if(_curBranch != null)
+        {
+            StartCoroutine(_curBranch.BranchReset());
+
+        }
+    }
 
     void GetFaceDirection()
     {
@@ -192,12 +214,15 @@ public class BirdController : MonoBehaviour
             if (hit)
             {
                 canJump = true;
-                _idLineElemnt = hit.transform.GetComponent<LineElement>().id;
+                var line = hit.transform.GetComponent<LineElement>();
+                if (line != null)
+                {
+                    _idLineElemnt = line.id;
+                }
             }
             else
             {
                 canJump = false;
-
             }
         }
     }
@@ -205,12 +230,17 @@ public class BirdController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        var check = other.GetComponent<CollisionWithRope>();
-        if (check != null)
+        var checkRope = other.GetComponent<CollisionWithRope>();
+        if (checkRope != null)
         {
             _currentRope = other.GetComponent<LineGenerator>();
             _currentRope.currentRopeID = _idLineElemnt;
             _currentRope.SetupRopeDisplay();
+        }
+        else
+        {
+            var checkBranch = other.GetComponent<CollisionWithBranch>();
+            _curBranch = other.GetComponent<Branch>();
         }
 
         if (other.tag == "MainCamera")

@@ -4,7 +4,13 @@ using UnityEngine;
 
 public class BasicEnemy : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public enum TypeEnemy
+    {
+        Basic,
+        Fat,
+        Fly,
+        Hide
+    }
     public enum EnemyState
     {
         MoveLeft,
@@ -12,22 +18,24 @@ public class BasicEnemy : MonoBehaviour
         Idle
     }
 
+    public TypeEnemy type = TypeEnemy.Basic;
+    [SerializeField] protected EnemyState state = EnemyState.MoveLeft;
     [SerializeField] protected LayerMask playerLayer;
     [SerializeField] protected float speed;
-    [SerializeField] protected EnemyState state = EnemyState.MoveLeft;
+    [SerializeField] protected Transform attackPosition;
 
     public const string a_Move = "Move";
 
     protected float _curXScale;
     Vector2 _minPosX;
     Vector2 _maxPosX;
-    protected Animator _anim;
+    protected Animator anim;
     protected RaycastHit2D hitLeftSide;
     protected RaycastHit2D hitRightSide;
 
     public void Awake()
     {
-        _anim = GetComponent<Animator>();
+        anim = GetComponent<Animator>();
     }
 
     public void Start()
@@ -50,44 +58,51 @@ public class BasicEnemy : MonoBehaviour
         if (state == EnemyState.MoveLeft)
         {
             transform.position += Vector3.left * speed * Time.deltaTime;
-            transform.localScale = new Vector2(-_curXScale, transform.localScale.y);
+            transform.localScale = new Vector2(_curXScale, transform.localScale.y);
+            anim.SetBool(a_Move, true);
+
         }
         else if (state == EnemyState.MoveRight)
         {
             transform.position += Vector3.right * speed * Time.deltaTime;
-            transform.localScale = new Vector2(_curXScale, transform.localScale.y);
+            transform.localScale = new Vector2(-_curXScale, transform.localScale.y);
+            anim.SetBool(a_Move, true);
         }
     }
 
 
     public void CheckPlayerInRope()
     {
-        hitLeftSide = Physics2D.Raycast(transform.position, Vector2.left, 6f, playerLayer);
-        hitRightSide = Physics2D.Raycast(transform.position, Vector2.right, 6f, playerLayer);
+        hitLeftSide = Physics2D.Raycast(attackPosition.transform.position, Vector2.left, 6f, playerLayer);
+        hitRightSide = Physics2D.Raycast(attackPosition.transform.position, Vector2.right, 6f, playerLayer);
 
         if (hitLeftSide)
         {
             state = EnemyState.MoveLeft;
-            _anim.SetBool(a_Move, true);
         }
         else if (hitRightSide)
         {
             state = EnemyState.MoveRight;
-            _anim.SetBool(a_Move , true);
         }
     }
 
     public void ApplyConstraint()
     {
-        if (Mathf.Abs(transform.position.x - _minPosX.x) < 0.1f)
+        if (Mathf.Abs(attackPosition.transform.position.x - _minPosX.x) < 0.1f)
         {
             state = EnemyState.MoveRight;
         }
 
-        if (Mathf.Abs(transform.position.x - _maxPosX.x) < 0.1f)
+        if (Mathf.Abs(attackPosition.transform.position.x - _maxPosX.x) < 0.1f)
         {
             state = EnemyState.MoveLeft;
         }
+    }
+
+
+    public void RespawnAt(Vector2 pos)
+    {
+        transform.localPosition = pos;
     }
 
 

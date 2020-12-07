@@ -6,6 +6,7 @@ TagManager:
   tags:
   - OneLine
   - OneRope
+  - Branch
   layers:
   - Default
   - TransparentFX
@@ -18,7 +19,7 @@ TagManager:
   - Line
   - PlayerLayer
   - CamLayer
-  - 
+  - Branch
   - 
   - 
   - 
