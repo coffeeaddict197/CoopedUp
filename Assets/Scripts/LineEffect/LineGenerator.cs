@@ -10,7 +10,7 @@ public class LineGenerator : MonoBehaviour, CollisionWithRope
         public int index;
         public Transform trans;
     }
-   
+
 
     // Start is called before the first frame update
     public GameObject LinePrefab;
@@ -127,22 +127,30 @@ public class LineGenerator : MonoBehaviour, CollisionWithRope
         transform.position = new Vector2(transform.position.x, newPosY);
         for (int i = 0; i < enemyConfig.Length; i++)
         {
-            if (enemyConfig[i].type != BasicEnemy.TypeEnemy.Basic)
-            {
-                float randomX = Random.Range(GameManager.Instance.camera.MiddleLeftPoint().x, GameManager.Instance.camera.MiddleRightPoint().x);
-                Vector2 pos = enemyConfig[i].transform.localPosition;
-                pos.x = randomX;
-                enemyConfig[i].RespawnAt(pos);
-            }
+
+            float randomX = Random.Range(GameManager.Instance.camera.MiddleLeftPoint().x, GameManager.Instance.camera.MiddleRightPoint().x);
+            Vector2 pos = enemyConfig[i].transform.localPosition;
+            pos.x = randomX;
+            enemyConfig[i].RespawnAt(pos);
         }
+
+        ChangeEnemy();
+
     }
 
-    void ConfigEnemy()
+    void ChangeEnemy()
     {
-        //for(int i = 0; i < enemyConfig.Length; i++)
-        //{
-        //    if(enemyConfig[i].type )
-        //}
+        int rd = Random.Range(0, enemyConfig.Length);
+        Debug.Log(rd);
+        for (int i = 0; i < enemyConfig.Length; i++)
+        {
+            if (i == rd)
+            {
+                enemyConfig[i].transform.gameObject.SetActive(true);
+                continue;
+            }
+            enemyConfig[i].transform.gameObject.SetActive(false);
+        }
     }
 
 
