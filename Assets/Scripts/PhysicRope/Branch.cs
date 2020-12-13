@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+//todo reset using dotween
 public class Branch : MonoBehaviour , CollisionWithBranch
 {
     [SerializeField] BasicEnemy[] enemyConfig;

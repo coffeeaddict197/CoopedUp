@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BirdController : MonoBehaviour
+public class BirdController : MonoBehaviour , CollisionWithEnemy
 {
 
     [SerializeField] float pushForce = 6f;
@@ -15,6 +15,8 @@ public class BirdController : MonoBehaviour
     public bool canJump = true;
     public bool isFalling = false;
     bool faceLeft = false;
+
+    //Trajectory 
     bool isDrag = false;
     Vector2 startPoint;
     Vector2 endPoint;
@@ -25,15 +27,19 @@ public class BirdController : MonoBehaviour
     Camera cam;
     DrawTrajectory _trajectory;
     BoxCollider2D _boxCollider;
+
     LineGenerator _currentRope;
     Branch _curBranch;
     AimAnimationController _aimAnimationController;
     //Save current line of Rope
     int _idLineElemnt;
+
+
     Animator _anim;
     const string a_isAim = "isAim";
     const string a_isFly = "isFly";
     const string a_triggerFalling = "Falling";
+    const string a_DeathAnim = "Death";
 
     float _curScaleX;
 
@@ -50,9 +56,12 @@ public class BirdController : MonoBehaviour
 
     void Update()
     {
-        CheckFalling();
-        GetFaceDirection();
-        SetAnimation();
+        if(!GameManager.Instance.gameOver)
+        {
+            CheckFalling();
+            GetFaceDirection();
+            SetAnimation();
+        }
     }
 
     private void FixedUpdate()
@@ -98,15 +107,18 @@ public class BirdController : MonoBehaviour
 
     void OnDragEnd()
     {
-        _anim.SetBool(a_isAim, false);
-        _boxCollider.enabled = false;
+        if (distance < 0.5f) return;
+
         Vector2 force = direction * pushForce * distance;
         rb.AddForce(force, ForceMode2D.Impulse);
+        _boxCollider.enabled = false;
+        _anim.SetBool(a_isAim, false);
         canJump = false;
         _trajectory.Hide();
         GroundDisplayReset();
         _currentRope = null;
         _curBranch = null;
+        
     }
 
     void DragAction()
@@ -231,36 +243,53 @@ public class BirdController : MonoBehaviour
         }
     }
 
-
-    private void OnTriggerEnter2D(Collider2D other)
+    public void Bounce()
     {
-        var checkRope = other.GetComponent<CollisionWithRope>();
-        if (checkRope != null)
-        {
-            _currentRope = other.GetComponent<LineGenerator>();
-            _currentRope.currentRopeID = _idLineElemnt;
-            _currentRope.SetupRopeDisplay();
-        }
+        rb.velocity = Vector2.zero;
+        Vector2 perpendicular = Vector2.Perpendicular(direction);
+        if (!faceLeft)
+            rb.AddForce(perpendicular * 3f * distance * 0.5f, ForceMode2D.Impulse);
         else
-        {
-            var checkBranch = other.GetComponent<CollisionWithBranch>();
-            _curBranch = other.GetComponent<Branch>();
-        }
-
-        if (other.tag == "MainCamera")
-        {
-            rb.velocity = Vector2.zero;
-            Vector2 perpendicular = Vector2.Perpendicular(direction);
-            if (!faceLeft)
-                rb.AddForce(perpendicular * 3f * distance * 0.5f, ForceMode2D.Impulse);
-            else
-                rb.AddForce(perpendicular * 3f * distance * -0.5f, ForceMode2D.Impulse);
-        }
+            rb.AddForce(perpendicular * 3f * distance * -0.5f, ForceMode2D.Impulse);
     }
 
 
+    public void SetupCurrentRopeAtCollider(Collider2D ropeElement)
+    {
+        _currentRope = ropeElement.GetComponent<LineGenerator>();
+        _currentRope.currentRopeID = _idLineElemnt;
+        _currentRope.SetupRopeDisplay();
+    }
 
+    public void SetupCurrentBranchAtCollider(Collider2D branch)
+    {
+        var checkBranch = branch.GetComponent<CollisionWithBranch>();
+        _curBranch = branch.GetComponent<Branch>();
+    }
 
+    IEnumerator DeathAction()
+    {
+        _anim.Play(a_DeathAnim);
+        _boxCollider.enabled = false;
+        _trajectory.enabled = false;
+        canJump = false;
+        GameManager.Instance.gameOver = true;
+        float dur = 0.5f;
+        Vector2 curPos = transform.position;
+        float t = 0;
+        while(t < dur)
+        {
+            transform.position = curPos;
+            t += Time.deltaTime;
+            yield return null;
+        }
+        this.enabled = false;
+        rb.velocity = Vector2.down * 1f;
 
+    }
 
+    public void Collided()
+    {
+        StartCoroutine(DeathAction());
+    }
 }

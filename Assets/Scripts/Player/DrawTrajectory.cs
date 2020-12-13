@@ -14,7 +14,6 @@ public class DrawTrajectory : MonoBehaviour
     Vector2 pos;
     Vector2 posSpacing;
 
-    BirdController birdController;
 
     void Awake()
     {

@@ -18,3 +18,15 @@ public interface CollisionWithBranch
 {
     void BranchUpdate(float distance);
 }
+
+
+public interface CollisionWithEnemy
+{
+    void Collided();
+}
+
+
+public interface CollisionWithPlayer
+{
+    void UpPoint();
+}

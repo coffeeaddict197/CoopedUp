@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+//Toto rename interface 
 public class LineGenerator : MonoBehaviour, CollisionWithRope
 {
     [System.Serializable]
@@ -24,6 +24,7 @@ public class LineGenerator : MonoBehaviour, CollisionWithRope
     DictLine[] dictPieceOFLine;
     Vector2 pos;
 
+    //todo optimize
     void GenerateLine()
     {
         pos = Vector2.zero;
@@ -55,7 +56,7 @@ public class LineGenerator : MonoBehaviour, CollisionWithRope
         {
             Transform line = dictPieceOFLine[i].trans;
             line.SetParent(parentLeft.transform);
-        }
+        } 
         for (int i = temp; i < pieceOfLine; i++)
         {
             Transform line = dictPieceOFLine[i].trans;
@@ -141,7 +142,6 @@ public class LineGenerator : MonoBehaviour, CollisionWithRope
     void ChangeEnemy()
     {
         int rd = Random.Range(0, enemyConfig.Length);
-        Debug.Log(rd);
         for (int i = 0; i < enemyConfig.Length; i++)
         {
             if (i == rd)

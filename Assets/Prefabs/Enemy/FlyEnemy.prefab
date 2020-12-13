@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 251918845014239039}
   - component: {fileID: 251918845014239037}
   - component: {fileID: 251918845014239036}
+  - component: {fileID: -8805229782391187788}
   m_Layer: 0
   m_Name: FlyEnemy
   m_TagString: Player
@@ -155,7 +156,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.6, y: 0.6}
+    oldSize: {x: 1, y: 1}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -202,6 +203,18 @@ MonoBehaviour:
     m_Bits: 512
   speed: 3
   attackPosition: {fileID: 7551229564100363422}
+--- !u!114 &-8805229782391187788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 251918845014239038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15f1a713e4e246d4cbc9cae0aab36565, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7551229564100363417
 GameObject:
   m_ObjectHideFlags: 0

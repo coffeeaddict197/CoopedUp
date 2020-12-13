@@ -18,6 +18,7 @@ public class BasicEnemy : MonoBehaviour
         Idle
     }
 
+    [Header("Base Setup")]
     public TypeEnemy type = TypeEnemy.Basic;
     [SerializeField] protected EnemyState state = EnemyState.MoveLeft;
     [SerializeField] protected LayerMask playerLayer;
