@@ -20,6 +20,8 @@ public class LineGenerator : MonoBehaviour, CollisionWithRope
     [HideInInspector] public int currentRopeID;
     [SerializeField] int pieceOfLine;
     [SerializeField] BasicEnemy[] enemyConfig;
+    [SerializeField] BasicBugs[] bugsConfig;
+
 
     DictLine[] dictPieceOFLine;
     Vector2 pos;
@@ -126,17 +128,23 @@ public class LineGenerator : MonoBehaviour, CollisionWithRope
     public void UpdatePosition(float newPosY)
     {
         transform.position = new Vector2(transform.position.x, newPosY);
-        for (int i = 0; i < enemyConfig.Length; i++)
-        {
+        //for (int i = 0; i < enemyConfig.Length; i++)
+        //{
 
-            float randomX = Random.Range(GameManager.Instance.camera.MiddleLeftPoint().x, GameManager.Instance.camera.MiddleRightPoint().x);
-            Vector2 pos = enemyConfig[i].transform.localPosition;
-            pos.x = randomX;
-            enemyConfig[i].RespawnAt(pos);
-        }
+        //    float randomX = Random.Range(GameManager.Instance.camera.MiddleLeftPoint().x, GameManager.Instance.camera.MiddleRightPoint().x);
+        //    Vector2 pos = enemyConfig[i].transform.localPosition;
+        //    pos.x = randomX;
+        //    enemyConfig[i].RespawnAt(pos);
+        //}
 
+        RespawnNewBugAndEnemy();
+
+    }
+
+    void RespawnNewBugAndEnemy()
+    {
         ChangeEnemy();
-
+        ChangeBug();
     }
 
     void ChangeEnemy()
@@ -146,10 +154,35 @@ public class LineGenerator : MonoBehaviour, CollisionWithRope
         {
             if (i == rd)
             {
+                float randomX = Random.Range(GameManager.Instance.camera.MiddleLeftPoint().x, GameManager.Instance.camera.MiddleRightPoint().x);
+                Vector2 pos = enemyConfig[i].transform.localPosition;
+                pos.x = randomX;
+                enemyConfig[i].RespawnAt(pos);
+
                 enemyConfig[i].transform.gameObject.SetActive(true);
                 continue;
             }
             enemyConfig[i].transform.gameObject.SetActive(false);
+        }
+    }
+
+    void ChangeBug()
+    {
+        int rd = Random.Range(0, bugsConfig.Length);
+        for (int i = 0; i < bugsConfig.Length; i++)
+        {
+            if (i == rd)
+            {
+                float randomX = Random.Range(GameManager.Instance.camera.MiddleLeftPoint().x, GameManager.Instance.camera.MiddleRightPoint().x);
+                Vector2 pos = bugsConfig[i].transform.localPosition;
+                pos.x = randomX;
+                bugsConfig[i].RespawnAt(pos);
+                bugsConfig[i].ResetState();
+
+                bugsConfig[i].transform.gameObject.SetActive(true);
+                continue;
+            }
+            bugsConfig[i].transform.gameObject.SetActive(false);
         }
     }
 

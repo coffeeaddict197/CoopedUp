@@ -13,21 +13,32 @@ public class PeekEnemy : BasicEnemy
     float posXRight;
 
     float speed = 5f;
-    new void Start()
+
+    private void Awake()
     {
         posXLeft = GameManager.Instance.camera.MiddleLeftPoint().x;
         posXRight = GameManager.Instance.camera.MiddleRightPoint().x;
+        transform.position = new Vector2(posXRight, transform.position.y);
         _anim = GetComponent<Animator>();
+    }
 
+    private void OnEnable()
+    {
+        Vector2 posRight =  new Vector2(posXRight, transform.position.y);
+        transform.position = posRight;
+        transform.localScale = new Vector2(1.2f, 1.2f);
         StartCoroutine(PeekEnemyAction());
     }
 
+    new void Update()
+    {
+
+    }
 
     IEnumerator PeekEnemyAction()
     {
         //Wait for animation peek.
         _anim.Play(a_PEEK);
-        Debug.Log(transform.localScale.x);
         yield return new WaitForSeconds(2.5f);
         _anim.Play(a_DASH);
         Vector2 desLeft = new Vector2(posXLeft, transform.position.y);

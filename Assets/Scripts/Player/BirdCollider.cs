@@ -11,7 +11,7 @@ public class BirdCollider : MonoBehaviour
         birdController = GetComponent<BirdController>();
     }
 
-   
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         var checkRope = other.GetComponent<CollisionWithRope>();
@@ -32,9 +32,10 @@ public class BirdCollider : MonoBehaviour
 
         //Check collision with bugs
         var checkBugs = other.GetComponent<CollisionWithPlayer>();
-        if(checkBugs!=null)
+        if (checkBugs != null)
         {
             checkBugs.UpPoint();
+            UIManager.Instance.UpPointAnimation(GameManager.Instance.bugPoints);
         }
     }
 

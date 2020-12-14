@@ -4,12 +4,26 @@ using UnityEngine;
 //todo reset using dotween
 public class Branch : MonoBehaviour , CollisionWithBranch
 {
+    public enum Side
+    {
+        Left,
+        Right
+    }
     [SerializeField] BasicEnemy[] enemyConfig;
+    [SerializeField] BasicBugs[] bugsConfig;
+    public Side side = Side.Left;
 
 
     private void Start()
     {
-        transform.position = new Vector2(GameManager.Instance.camera.MiddleLeftPoint().x, transform.position.y);
+        if (side == Side.Left)
+        {
+            transform.position = new Vector2(GameManager.Instance.camera.MiddleLeftPoint().x, transform.position.y);
+        }
+        else if (side == Side.Right)
+        {
+            transform.position = new Vector2(GameManager.Instance.camera.MiddleRightPoint().x, transform.position.y);
+        }
     }
     public void BranchUpdate(float distance)
     {
@@ -40,5 +54,27 @@ public class Branch : MonoBehaviour , CollisionWithBranch
     public void UpdatePosition(float newPosY)
     {
         transform.position = new Vector2(transform.position.x, newPosY);
+        ChangeBug();
+    }
+
+    void ChangeBug()
+    {
+        int rd = Random.Range(0, bugsConfig.Length);
+        Debug.Log(rd);
+        for (int i = 0; i < bugsConfig.Length; i++)
+        {
+            if (i == rd)
+            {
+                float randomX = Random.Range(0, GameManager.Instance.camera.MiddleRightPoint().x);
+                Vector2 pos = bugsConfig[i].transform.localPosition;
+                pos.x = randomX;
+                bugsConfig[i].RespawnAt(pos);
+                bugsConfig[i].ResetState();
+
+                bugsConfig[i].transform.gameObject.SetActive(true);
+                continue;
+            }
+            bugsConfig[i].transform.gameObject.SetActive(false);
+        }
     }
 }

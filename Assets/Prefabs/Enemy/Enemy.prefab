@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1857467210636376002}
   - component: {fileID: 1857467210636376003}
   - component: {fileID: 6612748313843063894}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Enemy
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -194,7 +194,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1857467211364463852}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Leg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -224,7 +224,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8246839733100418144}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}

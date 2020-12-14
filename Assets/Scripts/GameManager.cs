@@ -8,14 +8,10 @@ public class GameManager : MonoSingleton<GameManager>
     public BirdController bird;
     public Camera camera;
     public bool gameOver;
-
     public int bugPoints;
 
 
-    //public void ResetGame()
-    //{
-
-    //}
+    
 
 
 

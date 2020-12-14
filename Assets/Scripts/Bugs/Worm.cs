@@ -5,11 +5,11 @@ using UnityEngine;
 public class Worm : BasicBugs
 {
     const string a_SCARE = "Scare";
+
     bool isRun;
-    float curScale;
-    private void Awake()
+
+    private new void Awake()
     {
-        curScale = transform.localScale.x;
 
         base.Awake();
     }
