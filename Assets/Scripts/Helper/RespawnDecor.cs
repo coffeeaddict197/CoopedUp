@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RespawnDecor : MonoBehaviour
+public class RespawnDecor : MonoSingleton<RespawnDecor>
 {
     // Start is called before the first frame update
     public GameObject parentLeft;
@@ -36,13 +36,8 @@ public class RespawnDecor : MonoBehaviour
 
         }
     }
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
+    public void Respawn()
     {
         originPoitnLeft = GameManager.Instance.camera.MiddleLeftPoint();
         originPointRight = GameManager.Instance.camera.MiddleRightPoint();

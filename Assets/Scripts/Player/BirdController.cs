@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BirdController : MonoBehaviour , CollisionWithEnemy
+public class BirdController : MonoBehaviour, CollisionWithEnemy
 {
 
     [SerializeField] float pushForce = 6f;
@@ -12,8 +12,12 @@ public class BirdController : MonoBehaviour , CollisionWithEnemy
     public GameObject Legs;
     public Rigidbody2D rb;
 
+    [HideInInspector]
     public bool canJump = true;
+    [HideInInspector]
     public bool isFalling = false;
+    [HideInInspector]
+    public bool isDeath;
     bool faceLeft = false;
 
     //Trajectory 
@@ -40,6 +44,7 @@ public class BirdController : MonoBehaviour , CollisionWithEnemy
     const string a_isFly = "isFly";
     const string a_triggerFalling = "Falling";
     const string a_DeathAnim = "Death";
+    const string a_eat = "Eat";
 
     float _curScaleX;
 
@@ -56,7 +61,7 @@ public class BirdController : MonoBehaviour , CollisionWithEnemy
 
     void Update()
     {
-        if(!GameManager.Instance.gameOver)
+        if (!GameManager.Instance.gameOver)
         {
             CheckFalling();
             GetFaceDirection();
@@ -118,7 +123,10 @@ public class BirdController : MonoBehaviour , CollisionWithEnemy
         GroundDisplayReset();
         _currentRope = null;
         _curBranch = null;
-        
+
+        if(distance>1.5) ObjectPool.Instance.SpawnParticle(MyTag.TAG_FEATHER, transform.position);
+
+
     }
 
     void DragAction()
@@ -147,7 +155,7 @@ public class BirdController : MonoBehaviour , CollisionWithEnemy
         {
             _currentRope.RopeUpdate(distance);
         }
-        else if(_curBranch!=null)
+        else if (_curBranch != null)
         {
             _curBranch.BranchUpdate(distance);
         }
@@ -159,7 +167,7 @@ public class BirdController : MonoBehaviour , CollisionWithEnemy
         {
             StartCoroutine(_currentRope.RopeReset());
         }
-        else if(_curBranch != null)
+        else if (_curBranch != null)
         {
             StartCoroutine(_curBranch.BranchReset());
 
@@ -269,6 +277,7 @@ public class BirdController : MonoBehaviour , CollisionWithEnemy
 
     IEnumerator DeathAction()
     {
+        isDeath = true;
         _anim.Play(a_DeathAnim);
         _boxCollider.enabled = false;
         _trajectory.enabled = false;
@@ -277,7 +286,7 @@ public class BirdController : MonoBehaviour , CollisionWithEnemy
         float dur = 0.5f;
         Vector2 curPos = transform.position;
         float t = 0;
-        while(t < dur)
+        while (t < dur)
         {
             transform.position = curPos;
             t += Time.deltaTime;
@@ -291,5 +300,12 @@ public class BirdController : MonoBehaviour , CollisionWithEnemy
     public void Collided()
     {
         StartCoroutine(DeathAction());
+        this.enabled = false;
+    }
+
+
+    public void EatAction()
+    {
+        _anim.Play(a_eat);
     }
 }

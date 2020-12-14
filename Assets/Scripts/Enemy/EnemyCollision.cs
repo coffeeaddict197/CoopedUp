@@ -4,13 +4,18 @@ using UnityEngine;
 
 public class EnemyCollision : MonoBehaviour
 {
-    // Start is called before the first frame update
+   
     private void OnTriggerEnter2D(Collider2D collision)
     {
         var checkCollision = collision.GetComponent<CollisionWithEnemy>();
         if(checkCollision!=null)
         {
+            if (collision.CompareTag(MyTag.TAG_PLAYER))
+                if (GameManager.Instance.bird.isDeath) return;
+            
             checkCollision.Collided();
+            ObjectPool.Instance.SpawnEffect(MyTag.TAG_EFFECT, transform.position);
+            CameraShake.Instance.Shaking();
         }
     }
 }

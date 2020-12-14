@@ -32,7 +32,8 @@ public class Branch : MonoBehaviour , CollisionWithBranch
         {
             angleLeft = 0;
         }
-        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(transform.rotation.x, transform.rotation.y, -angleLeft), 0.15f);
+        if (side == Side.Left) transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(transform.rotation.x, transform.rotation.y, -angleLeft), 0.15f);
+        else transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(transform.rotation.x, transform.rotation.y, angleLeft), 0.15f);
     }
 
     public IEnumerator BranchReset()

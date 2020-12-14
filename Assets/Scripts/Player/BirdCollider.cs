@@ -6,6 +6,7 @@ public class BirdCollider : MonoBehaviour
 {
     BirdController birdController;
     const string CAM_TAG = "MainCamera";
+    const string EFFECT_TAG = "Effect";
     private void Awake()
     {
         birdController = GetComponent<BirdController>();
@@ -27,6 +28,7 @@ public class BirdCollider : MonoBehaviour
         if (other.CompareTag(CAM_TAG))
         {
             birdController.Bounce();
+            ObjectPool.Instance.SpawnParticle(MyTag.TAG_FEATHER, transform.position);
         }
 
 
@@ -34,7 +36,10 @@ public class BirdCollider : MonoBehaviour
         var checkBugs = other.GetComponent<CollisionWithPlayer>();
         if (checkBugs != null)
         {
+            birdController.EatAction();
             checkBugs.UpPoint();
+            ObjectPool.Instance.SpawnEffect(MyTag.TAG_EFFECT, other.transform.position);
+            ObjectPool.Instance.SpawnEffect(MyTag.TAG_STAREFFECT, other.transform.position);
             UIManager.Instance.UpPointAnimation(GameManager.Instance.bugPoints);
         }
     }

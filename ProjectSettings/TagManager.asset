@@ -7,6 +7,9 @@ TagManager:
   - OneLine
   - OneRope
   - Branch
+  - Effect
+  - StarEffect
+  - Feather
   layers:
   - Default
   - TransparentFX
