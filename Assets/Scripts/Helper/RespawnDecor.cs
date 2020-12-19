@@ -9,7 +9,11 @@ public class RespawnDecor : MonoSingleton<RespawnDecor>
     public GameObject parentRight;
 
     public GameObject[] listChildLeft;
+    Vector2[] oldPosLeft;
+
     public GameObject[] listChildRight;
+    Vector2[] oldPosRight;
+
     public float distance;
 
     Vector2 originPoitnLeft;
@@ -21,18 +25,22 @@ public class RespawnDecor : MonoSingleton<RespawnDecor>
         //Get Left
         int childLeftCount = parentLeft.transform.childCount;
         listChildLeft = new GameObject[childLeftCount];
+        oldPosLeft = new Vector2[childLeftCount];
         for (int i = 0; i < childLeftCount; i++)
         {
             listChildLeft[i] = parentLeft.transform.GetChild(i).gameObject;
             listChildLeft[i].transform.position = new Vector2(originPoitnLeft.x, listChildLeft[i].transform.position.y);
+            oldPosLeft[i] = listChildLeft[i].transform.position;
         }
         //Get Right
         int childRightCount = parentRight.transform.childCount;
         listChildRight = new GameObject[childRightCount];
+        oldPosRight = new Vector2[childRightCount];
         for (int i = 0; i < childRightCount; i++)
         {
             listChildRight[i] = parentRight.transform.GetChild(i).gameObject;
             listChildRight[i].transform.position = new Vector2(originPointRight.x, listChildRight[i].transform.position.y);
+            oldPosRight[i] = listChildRight[i].transform.position;
 
         }
     }
@@ -48,9 +56,9 @@ public class RespawnDecor : MonoSingleton<RespawnDecor>
 
     void CheckToRespawnLeft()
     {
-        for(int i = 0; i < listChildLeft.Length; i++)
+        for (int i = 0; i < listChildLeft.Length; i++)
         {
-            if(Vector2.Distance(listChildLeft[i].transform.position , originPoitnLeft) > distance)
+            if (Vector2.Distance(listChildLeft[i].transform.position, originPoitnLeft) > distance)
             {
                 listChildLeft[i].transform.position = new Vector2(listChildLeft[i].transform.position.x, originPoitnLeft.y + 7f);
             }
@@ -65,6 +73,19 @@ public class RespawnDecor : MonoSingleton<RespawnDecor>
             {
                 listChildRight[i].transform.position = new Vector2(listChildRight[i].transform.position.x, originPointRight.y + 7f);
             }
+        }
+    }
+
+
+    public void ResetDeccor()
+    {
+        for(int i = 0; i < listChildLeft.Length; i++)
+        {
+            listChildLeft[i].transform.position = oldPosLeft[i];
+        }
+        for(int i = 0; i < listChildRight.Length; i++)
+        {
+            listChildRight[i].transform.position = oldPosRight[i];
         }
     }
 }

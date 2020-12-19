@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FlyBug : BasicBugs , CollisionWithPlayer
+public class FlyBug : BasicBugs
 {
 
     public float[] wayPointY;
@@ -24,12 +24,12 @@ public class FlyBug : BasicBugs , CollisionWithPlayer
         Movement();
     }
 
-    public new void UpPoint()
-    {
-        GameManager.Instance.bugPoints++;
-        Debug.Log(GameManager.Instance.bugPoints);
-        gameObject.SetActive(false);
-    }
+    //public new void UpPoint()
+    //{
+    //    GameManager.Instance.bugPoints++;
+    //    Debug.Log(GameManager.Instance.bugPoints);
+    //    gameObject.SetActive(false);
+    //}
 
     IEnumerator UpAndDown()
     {

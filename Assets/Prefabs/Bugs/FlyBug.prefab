@@ -146,7 +146,7 @@ MonoBehaviour:
     m_Bits: 512
   state: 2
   type: 0
-  speed: 0.5
+  speed: 1.5
   wayPointY:
   - 1.45
   - 1.3

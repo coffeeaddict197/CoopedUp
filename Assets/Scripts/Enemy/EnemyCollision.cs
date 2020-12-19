@@ -11,11 +11,10 @@ public class EnemyCollision : MonoBehaviour
         if(checkCollision!=null)
         {
             if (collision.CompareTag(MyTag.TAG_PLAYER))
-                if (GameManager.Instance.bird.isDeath) return;
+                if (GameManager.Instance.bird.isDeath || GameManager.Instance.bird.isFrenzyMode) return;
             
             checkCollision.Collided();
-            ObjectPool.Instance.SpawnEffect(MyTag.TAG_EFFECT, transform.position);
-            CameraShake.Instance.Shaking();
+            
         }
     }
 }

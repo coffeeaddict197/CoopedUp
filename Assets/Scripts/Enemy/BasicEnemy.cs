@@ -46,8 +46,8 @@ public class BasicEnemy : MonoBehaviour
         _curXScale = transform.localScale.x;
     }
 
-    // Update is called once per frame
-    public virtual void Update()
+    
+    protected virtual void Update()
     {
         CheckPlayerInRope();
         Movement();

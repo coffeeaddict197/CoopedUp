@@ -13,6 +13,7 @@ public class Worm : BasicBugs
 
         base.Awake();
     }
+
     void Update()
     {
         CheckPlayerInRope();

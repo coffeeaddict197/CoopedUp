@@ -78,6 +78,7 @@ GameObject:
   - component: {fileID: 2479210784711722451}
   - component: {fileID: 662240389}
   - component: {fileID: 662240390}
+  - component: {fileID: 1741844673}
   m_Layer: 9
   m_Name: Bird
   m_TagString: Player
@@ -186,13 +187,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pushForce: 7
+  _triggerCollider: {fileID: 2479210784711722451}
   layer:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 2304
   Legs: {fileID: 2479210783984420599}
   rb: {fileID: 2479210784711722460}
-  canJump: 1
+  canJump: 0
   isFalling: 1
+  isDeath: 0
 --- !u!114 &2479210784711722450
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -216,7 +219,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2479210784711722456}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
@@ -248,7 +251,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.0012357831, y: -0.0031123161}
+  m_Offset: {x: 0.0012357831, y: -0.033715606}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -259,7 +262,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.39226192, y: 0.5237253}
+  m_Size: {x: 0.39226192, y: 0.58493185}
   m_EdgeRadius: 0
 --- !u!95 &662240389
 Animator:
@@ -298,6 +301,18 @@ MonoBehaviour:
   topC: {fileID: 21300000, guid: 199400d1aff8c7c46aa0a3a6584dbb2c, type: 3}
   topD: {fileID: 21300000, guid: f418a2d0d19bf9342a6e3ff208cdc9c3, type: 3}
   rootSprite: {fileID: 2479210784711722462}
+--- !u!114 &1741844673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2479210784711722456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a38fb5f0a948c8499eb2eb48d64666f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2479210784745087913
 GameObject:
   m_ObjectHideFlags: 0

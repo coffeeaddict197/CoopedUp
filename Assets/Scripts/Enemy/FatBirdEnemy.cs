@@ -15,7 +15,7 @@ public class FatBirdEnemy : BasicEnemy
     }
 
     // Update is called once per frame
-    new void Update()
+   protected override void Update()
     {
         base.Update();
         CheckPlayerNotInRope();

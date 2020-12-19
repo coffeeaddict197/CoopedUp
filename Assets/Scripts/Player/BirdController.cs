@@ -6,7 +6,7 @@ public class BirdController : MonoBehaviour, CollisionWithEnemy
 {
 
     [SerializeField] float pushForce = 6f;
-
+    
     //All of varible
     public LayerMask layer;
     public GameObject Legs;
@@ -19,6 +19,8 @@ public class BirdController : MonoBehaviour, CollisionWithEnemy
     [HideInInspector]
     public bool isDeath;
     bool faceLeft = false;
+    [HideInInspector]
+    public bool isFrenzyMode;
 
     //Trajectory 
     bool isDrag = false;
@@ -32,7 +34,7 @@ public class BirdController : MonoBehaviour, CollisionWithEnemy
     DrawTrajectory _trajectory;
     BoxCollider2D _boxCollider;
 
-    LineGenerator _currentRope;
+    public LineGenerator _currentRope;
     Branch _curBranch;
     AimAnimationController _aimAnimationController;
     //Save current line of Rope
@@ -42,11 +44,16 @@ public class BirdController : MonoBehaviour, CollisionWithEnemy
     Animator _anim;
     const string a_isAim = "isAim";
     const string a_isFly = "isFly";
+    //Node
     const string a_triggerFalling = "Falling";
     const string a_DeathAnim = "Death";
     const string a_eat = "Eat";
+    const string a_frenzy = "Frenzy";
+    const string a_idle = "Idle";
+
 
     float _curScaleX;
+    //Check game score
 
     void Awake()
     {
@@ -66,7 +73,10 @@ public class BirdController : MonoBehaviour, CollisionWithEnemy
             CheckFalling();
             GetFaceDirection();
             SetAnimation();
+            FrenzyModeAction();
         }
+
+
     }
 
     private void FixedUpdate()
@@ -76,7 +86,7 @@ public class BirdController : MonoBehaviour, CollisionWithEnemy
 
     private void LateUpdate()
     {
-        if (canJump)
+        if (canJump && !GameManager.Instance.isPause)
             DragAction();
     }
 
@@ -116,7 +126,7 @@ public class BirdController : MonoBehaviour, CollisionWithEnemy
 
         Vector2 force = direction * pushForce * distance;
         rb.AddForce(force, ForceMode2D.Impulse);
-        _boxCollider.enabled = false;
+        //_boxCollider.enabled = false;
         _anim.SetBool(a_isAim, false);
         canJump = false;
         _trajectory.Hide();
@@ -124,7 +134,7 @@ public class BirdController : MonoBehaviour, CollisionWithEnemy
         _currentRope = null;
         _curBranch = null;
 
-        if(distance>1.5) ObjectPool.Instance.SpawnParticle(MyTag.TAG_FEATHER, transform.position);
+        if (distance > 1.5) ObjectPool.Instance.SpawnParticle(MyTag.TAG_FEATHER, transform.position);
 
 
     }
@@ -292,16 +302,65 @@ public class BirdController : MonoBehaviour, CollisionWithEnemy
             t += Time.deltaTime;
             yield return null;
         }
-        this.enabled = false;
         rb.velocity = Vector2.down * 1f;
 
+        yield return new WaitForSeconds(1f);
+    }
+
+    public void FrenzyModeAction()
+    {
+
+        if (GameManager.Instance.bugPoints == GameManager.Instance.MaxBugPoints && isFrenzyMode == false)
+        {
+            StartCoroutine(FrenzyMode());
+            isFrenzyMode = true;
+        }
+    }
+    IEnumerator FrenzyMode()
+    {
+        _anim.Play(a_frenzy);
+        UIManager.Instance.FrenzyBackgroundToggle();
+        float duration = 3f;
+        float t = 0f;
+        float curGravity = this.rb.gravityScale;
+        this.rb.gravityScale = 0f;
+        while (t < duration)
+        {
+            Vector2 direcToMove = GameManager.Instance.camera.TopMiddlePoint() - (Vector2)transform.position;
+            transform.position += (Vector3)direcToMove.normalized * 5f * Time.deltaTime;
+            t += Time.deltaTime;
+            yield return null;
+        }
+        this.rb.gravityScale = curGravity;
+        UIManager.Instance.FrenzyBackgroundToggle();
+
+        yield return new WaitForSeconds(1f);
+        _anim.Play(a_idle);
+        GameManager.Instance.bugPoints = 0;
+        isFrenzyMode = false;
+        yield break;
+    }
+
+    public void ResetState()
+    {
+        rb.velocity = Vector2.zero;
+        isDeath = false;
+        _anim.Play(a_idle);
+        _boxCollider.enabled = true;
+        _trajectory.enabled = true;
     }
 
     public void Collided()
     {
-        StartCoroutine(DeathAction());
-        this.enabled = false;
+        if(!this.isDeath)
+        {
+            StartCoroutine(DeathAction());
+            ObjectPool.Instance.SpawnEffect(MyTag.TAG_EFFECT, transform.position);
+            CameraShake.Instance.Shaking();
+            GameManager.Instance.GameOverState();
+        }
     }
+
 
 
     public void EatAction()

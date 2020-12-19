@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GenerateMap : MonoBehaviour
+public class GenerateMap : MonoSingleton<GenerateMap>
 {
     [SerializeField] GameObject[] listObstacle;
 
     [SerializeField] List<LineGenerator> listRope = new List<LineGenerator>();
     [SerializeField] List<Branch> listBranch = new List<Branch>();
-
     [SerializeField] GameObject lastObj;
 
     public int NumberOfObstacle;
@@ -17,18 +16,14 @@ public class GenerateMap : MonoBehaviour
     const string branch_tag = "Branch";
 
     float lastPosY;
+    float originLastPosY;
     private Camera cam;
 
-    private void Awake()
+    private new void Awake()
     {
         cam = Camera.main;
         lastPosY = lastObj.transform.position.y+2.5f;
-        //Initialize();
-    }
-
-
-    void Start()
-    {
+        originLastPosY = lastPosY;
     }
 
 
@@ -53,28 +48,15 @@ public class GenerateMap : MonoBehaviour
         }
     }
 
-    //void Initialize()
-    //{
-    //    for (int i = 0; i < listObstacle.Length; i++)
-    //    {
-    //        GameObject obj = Instantiate(listObstacle[i], transform);
-    //        if(obj.tag == rope_tag)
-    //        {
-    //            listRope.Add(obj.transform.GetComponent<LineGenerator>());
-    //            obj.transform.position = new Vector2(0, 0);
-    //            //lastPosY += 2.5f;
-    //        }
-    //        if(obj.tag == branch_tag)
-    //        {
-    //            Branch newBranch = obj.GetComponent<Branch>();
-    //            listBranch.Add(newBranch);
-    //            obj.transform.position = new Vector2(GameManager.Instance.camera.MiddleLeftPoint().x, 0);
-    //            //lastPosY += 2.5f;
-    //        }
-    //        obj.SetActive(false);
-    //    }
-    //}
-
-
+    public void ResetAllObstacle()
+    {
+        float firstY = -2.5f;
+        lastPosY = originLastPosY;
+        for (int i = 0; i < listObstacle.Length; i++)
+        {
+            listObstacle[i].transform.position = new Vector2(listObstacle[i].transform.position.x, firstY);
+            firstY += 2.5f;
+        }
+    }
 
 }

@@ -46,6 +46,11 @@ public class BasicBugs : MonoBehaviour , CollisionWithPlayer
         anim = GetComponent<Animator>();
     }
 
+    private void OnEnable()
+    {
+        ResetState();
+    }
+
     public void CheckPlayerInRope()
     {
         hitLeftSide = Physics2D.Raycast(transform.position, Vector2.left, 6f, playerLayer);

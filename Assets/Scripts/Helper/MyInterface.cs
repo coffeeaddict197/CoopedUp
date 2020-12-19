@@ -5,6 +5,9 @@ using UnityEngine;
 public interface CollisionWithRope
 {
    void SetupRopeDisplay();
+
+    int GetID();
+
 }
 
 
@@ -17,6 +20,8 @@ public interface CollisionWithCamera
 public interface CollisionWithBranch
 {
     void BranchUpdate(float distance);
+
+    int GetID();
 }
 
 
@@ -29,4 +34,9 @@ public interface CollisionWithEnemy
 public interface CollisionWithPlayer
 {
     void UpPoint();
+}
+
+public interface RopeCollisionWithPlayer
+{
+    LineGenerator GetRope();
 }

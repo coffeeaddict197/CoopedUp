@@ -13,7 +13,13 @@ public class Branch : MonoBehaviour , CollisionWithBranch
     [SerializeField] BasicBugs[] bugsConfig;
     public Side side = Side.Left;
 
+    public int idBranch;
 
+    private void Awake()
+    {
+        idBranch = GameManager.ROPE_ID;
+        GameManager.ROPE_ID++;
+    }
     private void Start()
     {
         if (side == Side.Left)
@@ -61,7 +67,6 @@ public class Branch : MonoBehaviour , CollisionWithBranch
     void ChangeBug()
     {
         int rd = Random.Range(0, bugsConfig.Length);
-        Debug.Log(rd);
         for (int i = 0; i < bugsConfig.Length; i++)
         {
             if (i == rd)
@@ -77,5 +82,10 @@ public class Branch : MonoBehaviour , CollisionWithBranch
             }
             bugsConfig[i].transform.gameObject.SetActive(false);
         }
+    }
+
+    public int GetID()
+    {
+        return idBranch;
     }
 }

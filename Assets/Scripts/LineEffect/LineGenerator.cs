@@ -10,7 +10,7 @@ public class LineGenerator : MonoBehaviour, CollisionWithRope
         public int index;
         public Transform trans;
     }
-
+    public int ropeID;
 
     // Start is called before the first frame update
     public GameObject LinePrefab;
@@ -27,6 +27,7 @@ public class LineGenerator : MonoBehaviour, CollisionWithRope
     Vector2 pos;
 
     //todo optimize
+    
     void GenerateLine()
     {
         pos = Vector2.zero;
@@ -50,6 +51,8 @@ public class LineGenerator : MonoBehaviour, CollisionWithRope
     private void Awake()
     {
         GenerateLine();
+        ropeID = GameManager.ROPE_ID;
+        GameManager.ROPE_ID++;
     }
 
     void ResetParent(int temp)
@@ -128,15 +131,6 @@ public class LineGenerator : MonoBehaviour, CollisionWithRope
     public void UpdatePosition(float newPosY)
     {
         transform.position = new Vector2(transform.position.x, newPosY);
-        //for (int i = 0; i < enemyConfig.Length; i++)
-        //{
-
-        //    float randomX = Random.Range(GameManager.Instance.camera.MiddleLeftPoint().x, GameManager.Instance.camera.MiddleRightPoint().x);
-        //    Vector2 pos = enemyConfig[i].transform.localPosition;
-        //    pos.x = randomX;
-        //    enemyConfig[i].RespawnAt(pos);
-        //}
-
         RespawnNewBugAndEnemy();
 
     }
@@ -177,8 +171,6 @@ public class LineGenerator : MonoBehaviour, CollisionWithRope
                 Vector2 pos = bugsConfig[i].transform.localPosition;
                 pos.x = randomX;
                 bugsConfig[i].RespawnAt(pos);
-                bugsConfig[i].ResetState();
-
                 bugsConfig[i].transform.gameObject.SetActive(true);
                 continue;
             }
@@ -186,7 +178,8 @@ public class LineGenerator : MonoBehaviour, CollisionWithRope
         }
     }
 
-
-
-
+    public int GetID()
+    {
+        return ropeID;
+    }
 }

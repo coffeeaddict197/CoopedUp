@@ -34,13 +34,15 @@ public class CameraScript : MonoBehaviour
     {
         if (player != null)
         {
-            if (player.canJump && player.isFalling)
+            if (((player.canJump && player.isFalling) || player.isFrenzyMode) && !player.isDeath)
             {
                 Vector2 newPos = Vector2.Lerp(transform.position, player.transform.position, Time.fixedDeltaTime * 5f);
                 transform.position = new Vector3(transform.position.x, newPos.y, offSet);
                 RespawnDecor.Instance.Respawn();
             }
         }
+
+
     }
 
     private void Update()
