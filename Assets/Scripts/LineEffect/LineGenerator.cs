@@ -110,6 +110,7 @@ public class LineGenerator : MonoBehaviour, CollisionWithRope
 
     public IEnumerator RopeReset()
     {
+        SoundManager.Instance.PlayOneShot(SoundManager.ROPE);
         float t = 0f;
         Quaternion startA = parentLeft.transform.rotation;
         Quaternion startB = parentRight.transform.rotation;

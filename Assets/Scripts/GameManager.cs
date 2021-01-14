@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using DG.Tweening;
 public class GameManager : MonoSingleton<GameManager>
 {
     // Start is called before the first frame update
@@ -12,13 +13,13 @@ public class GameManager : MonoSingleton<GameManager>
 
     [Header("Bug Point")]
     public int MaxBugPoints;
-    [HideInInspector] public bool gameOver;
+    public bool gameOver = true;
 
     //Setup role ID
     public static int ROPE_ID;
     [Header("Game Score")]
     const string KEY_HIGHTSCORE = "HightScore";
-    int _bugPoints;
+    [SerializeField] int _bugPoints;
     int _highScore;
     int _gameScore;
 
@@ -64,6 +65,16 @@ public class GameManager : MonoSingleton<GameManager>
     private new void Awake()
     {
         hightScore = PlayerPrefs.GetInt(KEY_HIGHTSCORE, 0);
+        gameOver = true;
+        Time.timeScale = 0f;
+    }
+
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.F))
+        {
+            bugPoints = 9;
+        }
     }
 
 
@@ -74,22 +85,35 @@ public class GameManager : MonoSingleton<GameManager>
         this.gameOver = true;
     }
 
+    public void StartGame()
+    {
+        Time.timeScale = 1f;
+        bird.transform.DOMoveY(-2.5f, 2f).SetUpdate(true).OnComplete(() => {
+            gameOver = false;
+        });
+    }
+
     void ResetPointGame()
     {
         this.startPlay = false;
-        this.gameOver = false;
         this.gameScore = 0;
         this.bugPoints = 0;
     }
     public void ResetGameScene()
     {
+        bird.transform.DOMoveY(-1.5f , 2f).SetUpdate(true).OnComplete(() => {
+            this.gameOver = false;
+            bird._boxCollider.enabled = true;
+        });
         bird.ResetState();
         camera.transform.position = new Vector3(0f, 0f, camera.transform.position.z);
-        bird.transform.position = new Vector2(0 , -2f);
+        bird.transform.position = new Vector2(0 , -4f);
         GenerateMap.Instance.ResetAllObstacle();
         RespawnDecor.Instance.ResetDeccor();
         Hostile.instance.ResetPosition();
         this.ResetPointGame();
+        SoundManager.Instance.StopAllLoop();
+        SoundManager.Instance.Play(SoundManager.BG_BIRDS);
         UnPauseGame();
     }
 

@@ -74,17 +74,21 @@ public class BasicEnemy : MonoBehaviour
 
     public void CheckPlayerInRope()
     {
-        hitLeftSide = Physics2D.Raycast(attackPosition.transform.position, Vector2.left, 6f, playerLayer);
-        hitRightSide = Physics2D.Raycast(attackPosition.transform.position, Vector2.right, 6f, playerLayer);
+        if(GameManager.Instance.bird.canJump)
+        {
+            hitLeftSide = Physics2D.Raycast(attackPosition.transform.position, Vector2.left, 6f, playerLayer);
+            hitRightSide = Physics2D.Raycast(attackPosition.transform.position, Vector2.right, 6f, playerLayer);
 
-        if (hitLeftSide)
-        {
-            state = EnemyState.MoveLeft;
+            if (hitLeftSide)
+            {
+                state = EnemyState.MoveLeft;
+            }
+            else if (hitRightSide)
+            {
+                state = EnemyState.MoveRight;
+            }
         }
-        else if (hitRightSide)
-        {
-            state = EnemyState.MoveRight;
-        }
+       
     }
 
     public void ApplyConstraint()

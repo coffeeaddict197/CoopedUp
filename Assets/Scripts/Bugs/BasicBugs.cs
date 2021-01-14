@@ -81,6 +81,7 @@ public class BasicBugs : MonoBehaviour , CollisionWithPlayer
     public void UpPoint()
     {
         GameManager.Instance.bugPoints++;
+        SoundManager.Instance.PlayOneShot(SoundManager.BUG);
         gameObject.SetActive(false);
     }
 

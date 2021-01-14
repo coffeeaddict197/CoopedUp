@@ -41,10 +41,10 @@ GameObject:
   - component: {fileID: 251918845014239033}
   - component: {fileID: 251918845014239032}
   - component: {fileID: 251918845014239034}
-  - component: {fileID: 251918845014239039}
   - component: {fileID: 251918845014239037}
   - component: {fileID: 251918845014239036}
   - component: {fileID: -8805229782391187788}
+  - component: {fileID: 7358230703201299694}
   m_Layer: 13
   m_Name: FlyEnemy
   m_TagString: Player
@@ -139,32 +139,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!61 &251918845014239039
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 251918845014239038}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: -0.004956454, y: -0.0118944645}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.276354, y: 0.38935995}
-  m_EdgeRadius: 0
 --- !u!95 &251918845014239037
 Animator:
   serializedVersion: 3
@@ -215,6 +189,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15f1a713e4e246d4cbc9cae0aab36565, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!68 &7358230703201299694
+EdgeCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 251918845014239038}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_EdgeRadius: 0
+  m_Points:
+  - {x: -0.2363872, y: 0.015738077}
+  - {x: -0.018049307, y: 0.08050333}
+  - {x: 0.09096615, y: -0.022810102}
+  - {x: 0.21008824, y: -0.017219543}
+  - {x: 0.16525272, y: -0.13966689}
+  - {x: 0.11947194, y: -0.13964246}
+  - {x: -0.16796559, y: -0.37039065}
+  - {x: -0.35385054, y: -0.34739265}
+  - {x: -0.37928, y: -0.15329137}
+  - {x: -0.25542778, y: 0.01180353}
 --- !u!1 &7551229564100363417
 GameObject:
   m_ObjectHideFlags: 0

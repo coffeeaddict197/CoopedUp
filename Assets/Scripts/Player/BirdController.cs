@@ -32,7 +32,7 @@ public class BirdController : MonoBehaviour, CollisionWithEnemy
 
     Camera cam;
     DrawTrajectory _trajectory;
-    BoxCollider2D _boxCollider;
+    public BoxCollider2D _boxCollider;
 
     public LineGenerator _currentRope;
     Branch _curBranch;
@@ -50,10 +50,11 @@ public class BirdController : MonoBehaviour, CollisionWithEnemy
     const string a_eat = "Eat";
     const string a_frenzy = "Frenzy";
     const string a_idle = "Idle";
-
+    const string a_flyUp = "FlyUp";
 
     float _curScaleX;
     //Check game score
+    bool checkToPlayMusic;
 
     void Awake()
     {
@@ -68,7 +69,7 @@ public class BirdController : MonoBehaviour, CollisionWithEnemy
 
     void Update()
     {
-        if (!GameManager.Instance.gameOver)
+        if (!GameManager.Instance.gameOver || GameManager.Instance.isPause)
         {
             CheckFalling();
             GetFaceDirection();
@@ -81,13 +82,18 @@ public class BirdController : MonoBehaviour, CollisionWithEnemy
 
     private void FixedUpdate()
     {
-        CheckGround();
+        if(!GameManager.Instance.gameOver)
+        {
+            CheckGround();
+        }
     }
 
     private void LateUpdate()
     {
-        if (canJump && !GameManager.Instance.isPause)
+        if (!GameManager.Instance.isPause && !GameManager.Instance.gameOver)
+        {
             DragAction();
+        }
     }
 
 
@@ -116,7 +122,9 @@ public class BirdController : MonoBehaviour, CollisionWithEnemy
         direction = (startPoint - endPoint).normalized;
         GroundDisplayUpdating(distance);
         _aimAnimationController.UpdateSprieFollowDirecion(direction);
-        _trajectory.UpdateTrajectory(transform.position, direction * distance);
+
+        float distanceTranject = distance > 1.5f ? 1.5f : distance;
+        _trajectory.UpdateTrajectory(transform.position, direction * distanceTranject);
 
     }
 
@@ -126,7 +134,6 @@ public class BirdController : MonoBehaviour, CollisionWithEnemy
 
         Vector2 force = direction * pushForce * distance;
         rb.AddForce(force, ForceMode2D.Impulse);
-        //_boxCollider.enabled = false;
         _anim.SetBool(a_isAim, false);
         canJump = false;
         _trajectory.Hide();
@@ -136,7 +143,13 @@ public class BirdController : MonoBehaviour, CollisionWithEnemy
 
         if (distance > 1.5) ObjectPool.Instance.SpawnParticle(MyTag.TAG_FEATHER, transform.position);
 
+        if(!checkToPlayMusic)
+        {
+            SoundManager.Instance.Play(SoundManager.BG_MAIN);
+            checkToPlayMusic = true;
+        }
 
+        SoundManager.Instance.PlayOneShot(SoundManager.JUMP);
     }
 
     void DragAction()
@@ -146,7 +159,7 @@ public class BirdController : MonoBehaviour, CollisionWithEnemy
             isDrag = true;
             OnDragStart();
         }
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonUp(0) && canJump)
         {
             isDrag = false;
             OnDragEnd();
@@ -345,9 +358,10 @@ public class BirdController : MonoBehaviour, CollisionWithEnemy
     {
         rb.velocity = Vector2.zero;
         isDeath = false;
-        _anim.Play(a_idle);
-        _boxCollider.enabled = true;
+        _anim.Play(a_flyUp);
+        _anim.SetBool(a_isFly, true);
         _trajectory.enabled = true;
+        checkToPlayMusic = false;
     }
 
     public void Collided()
@@ -355,6 +369,9 @@ public class BirdController : MonoBehaviour, CollisionWithEnemy
         if(!this.isDeath)
         {
             StartCoroutine(DeathAction());
+            SoundManager.Instance.PlayOneShot(SoundManager.DEAD);
+            SoundManager.Instance.PlayOneShot(SoundManager.SMILE);
+            SoundManager.Instance.StopAllLoop();
             ObjectPool.Instance.SpawnEffect(MyTag.TAG_EFFECT, transform.position);
             CameraShake.Instance.Shaking();
             GameManager.Instance.GameOverState();

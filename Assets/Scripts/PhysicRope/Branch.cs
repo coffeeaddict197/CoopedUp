@@ -44,6 +44,7 @@ public class Branch : MonoBehaviour , CollisionWithBranch
 
     public IEnumerator BranchReset()
     {
+        SoundManager.Instance.PlayOneShot(SoundManager.BRANCH);
         float t = 0f;
         Quaternion start = transform.rotation;
         float dur = 0.1f;

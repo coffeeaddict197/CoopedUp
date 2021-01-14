@@ -7,10 +7,12 @@ public class FlyEnemy : BasicEnemy
 
     BasicEnemy.EnemyState curState;
     const string a_turn = "Turn";
+    float originY;
     new void Awake()
     {
         curState = state;
         base.Awake();
+        originY = transform.localPosition.y;
     }
     new void Start()
     {
@@ -22,6 +24,8 @@ public class FlyEnemy : BasicEnemy
     {
         base.Movement();
         base.ApplyConstraint();
+
+        transform.localPosition = new Vector3(transform.localPosition.x, originY);
     }
 
     private void LateUpdate()
