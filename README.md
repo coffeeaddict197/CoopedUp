@@ -2,6 +2,6 @@
 ![Image](../preview/demo2.png?raw=true)
 ![Image](../preview/demo3.png?raw=true)
 
-![Screenshot](/preview/demo1.png)
-![Screenshot](/preview/demo2.png)
-![Screenshot](/preview/demo3.png)
+![Screenshot](/Preview/demo1.png)
+![Screenshot](/Preview/demo2.png)
+![Screenshot](/Preview/demo3.png)
