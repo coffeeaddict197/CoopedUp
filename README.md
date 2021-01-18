@@ -3,10 +3,11 @@ Casual Jumping Mobile Game , Control your bird , Jump fast, eat bugs, get high s
 
 ## Stakeholder
 
-Mentor : Nguyễn Quốc Phương
-Developer : Võ Minh Tân
-Music + Artist : Nitrome
+Mentor : Nguyễn Quốc Phương  
+Developer : Võ Minh Tân  
+Music + Artist : Nitrome  
 
+More Infomation : https://mingtan.itch.io/
 
 <p align="center">
   <img src="/Preview/demo1.png" />
